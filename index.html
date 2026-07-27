@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Girlfriend's Day 💗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root{
+  --burgundy:#6e2438; --burgundy-dark:#4a1424; --blush:#f1c7ce; --dusty-rose:#d98a95;
+  --cream:#fbf3ea; --cream-dark:#f1e3d2; --gold:#c9a24b; --ink:#3a2226; --ink-soft:#6b4a4f;
+  --kraft:#e9d3ae;
+  --font-display:"Playfair Display",Georgia,serif; --font-hand:"Caveat","Segoe Script",cursive; --font-body:"Nunito",-apple-system,sans-serif;
+  --shadow-soft:0 18px 40px -12px rgba(74,20,36,.35);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-body); color:var(--ink); min-height:100vh; -webkit-font-smoothing:antialiased;
+  background:radial-gradient(circle at 15% 10%, var(--blush) 0%, transparent 55%),
+             radial-gradient(circle at 85% 90%, var(--dusty-rose) 0%, transparent 50%), var(--cream);
+  position:relative;
+}
+h1,h2,h3{font-family:var(--font-display); margin:0 0 .4em; color:var(--burgundy);}
+.hand{font-family:var(--font-hand);}
+a{color:inherit;}
+
+/* ---------- floating heart bubble background (used everywhere) ---------- */
+#heartBg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.floaty{position:absolute;bottom:-40px;opacity:.35;animation:floatUp linear infinite;filter:drop-shadow(0 2px 3px rgba(110,36,56,.15));}
+@keyframes floatUp{
+  0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0;}
+  8%{opacity:.4;}
+  90%{opacity:.35;}
+  100%{transform:translateY(-115vh) translateX(var(--drift,20px)) rotate(25deg);opacity:0;}
+}
+.wrap, .stage{position:relative;z-index:1;}
+
+.paper-card{position:relative;background:var(--cream);border-radius:26px;box-shadow:var(--shadow-soft);padding:28px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-body);font-weight:700;font-size:15px;padding:14px 26px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;transition:transform .15s ease,box-shadow .15s ease;}
+.btn-primary{background:linear-gradient(135deg,var(--burgundy) 0%,var(--burgundy-dark) 100%);color:var(--cream);box-shadow:0 10px 24px -6px rgba(74,20,36,.55);}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-ghost{background:transparent;color:var(--burgundy);border:2px solid var(--burgundy);}
+.btn-gold{background:var(--gold);color:var(--burgundy-dark);box-shadow:0 10px 22px -8px rgba(201,162,75,.7);}
+.btn-ai{background:linear-gradient(135deg,#f3d9e2,#e8b7c8);color:var(--burgundy-dark);font-size:13px;padding:9px 16px;box-shadow:0 6px 14px -6px rgba(110,36,56,.35);}
+.btn-sm{font-size:13px;padding:9px 16px;}
+
+label{font-weight:700;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-soft);display:block;margin:0 0 6px;}
+.req::after{content:" *";color:#b3413a;}
+input[type="text"],textarea{width:100%;font-family:var(--font-body);font-size:16px;padding:13px 16px;border-radius:14px;border:2px solid var(--cream-dark);background:#fff;color:var(--ink);outline:none;}
+input:focus,textarea:focus{border-color:var(--dusty-rose);}
+.field{margin-bottom:20px;}
+.hint{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+
+.wrap{max-width:560px;margin:0 auto;padding:40px 20px 80px;}
+.eyebrow{text-align:center;font-family:var(--font-hand);font-size:22px;color:var(--dusty-rose);margin-bottom:2px;}
+.title{text-align:center;font-size:34px;margin-bottom:6px;}
+.sub{text-align:center;color:var(--ink-soft);margin-bottom:32px;font-size:15px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:520px){.row2{grid-template-columns:1fr;}}
+.msg-label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.msg-label-row label{margin:0;}
+
+.upload-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.upload-slot{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;border:2px dashed var(--dusty-rose);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.upload-slot img{width:100%;height:100%;object-fit:cover;}
+.upload-slot span{font-size:12px;text-align:center;color:var(--ink-soft);padding:6px;}
+.upload-slot input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-note{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+.cta-row{margin-top:34px;text-align:center;}
+.footer-note{text-align:center;margin-top:18px;font-size:12.5px;color:var(--ink-soft);}
+.link-hint{text-align:center;margin-top:14px;}
+.gf-day-banner{text-align:center;background:linear-gradient(135deg,#fce3ea,#f6c9d6);border-radius:18px;padding:10px 16px;font-size:13px;color:var(--burgundy-dark);font-weight:700;margin-bottom:22px;}
+
+/* payment step */
+.price-row{display:flex;align-items:baseline;justify-content:center;gap:10px;margin:18px 0 6px;}
+.price-now{font-family:var(--font-display);font-size:42px;color:var(--burgundy);}
+.price-was{text-decoration:line-through;color:var(--ink-soft);font-size:18px;}
+.coupon-row{display:flex;gap:10px;}
+.coupon-row input{flex:1;}
+.coupon-msg{font-size:13px;margin-top:8px;min-height:18px;}
+.coupon-msg.ok{color:#2f7a4d;} .coupon-msg.err{color:#b3413a;}
+.summary-line{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px dashed var(--cream-dark);}
+.link-box{display:none;margin-top:24px;text-align:center;}
+.link-box.show{display:block;}
+.link-field{display:flex;gap:8px;margin-top:14px;}
+.link-field input{font-size:13px;}
+.step{display:none;}
+.step.active{display:block;}
+.back-link{display:block;text-align:center;margin-bottom:14px;font-size:13px;color:var(--ink-soft);text-decoration:none;}
+
+/* ================= shared "story frame" look (used by preview + recipient view) ================= */
+.frame-card,.story-frame{width:100%;max-width:380px;aspect-ratio:9/15.5;max-height:88vh;background:var(--cream);border-radius:28px;box-shadow:var(--shadow-soft);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+.story-frame{max-width:340px;max-height:100%;}
+.frame-card.textured,.story-frame.textured{background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.35) 0%, transparent 45%),
+    radial-gradient(circle at 80% 85%, rgba(110,36,56,.12) 0%, transparent 55%),
+    linear-gradient(160deg, #f6d3d9 0%, #e9b9c4 45%, #dba3b2 100%);}
+.torn-edge,.story-torn-edge{position:absolute; top:0; left:0; right:0; height:20px; z-index:4;
+  background:var(--cream);
+  clip-path:polygon(0 0,100% 0,100% 55%,94% 100%,88% 45%,82% 100%,76% 40%,70% 100%,64% 45%,58% 100%,52% 40%,46% 100%,40% 45%,34% 100%,28% 40%,22% 100%,16% 45%,10% 100%,4% 40%,0 60%);}
+
+.sticker,.story-sticker{position:absolute;z-index:3;filter:drop-shadow(0 3px 6px rgba(0,0,0,.18));line-height:1;}
+.tag,.story-tag{position:absolute;background:var(--kraft);color:var(--ink);font-size:11px;font-weight:700;padding:6px 11px;border-radius:3px;box-shadow:0 3px 7px rgba(0,0,0,.16);text-align:center;line-height:1.25;z-index:3;font-family:var(--font-body);}
+.story-tag{font-size:9.5px;padding:5px 9px;}
+.tag.dark,.story-tag.dark{background:var(--burgundy);color:var(--cream);}
+.speech-tag,.story-speech-tag{position:absolute; z-index:3; background:var(--cream); color:var(--burgundy); font-family:var(--font-display); font-style:italic; font-size:11.5px; padding:6px 10px; border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,.15); max-width:108px; line-height:1.25; text-align:center;}
+.story-speech-tag{font-size:9.5px;max-width:92px;padding:5px 8px;}
+
+/* central taped polaroid photo, matches reference */
+.polaroid{position:relative;background:#fff;padding:8px 8px 10px;border-radius:4px;box-shadow:0 12px 26px -10px rgba(0,0,0,.4);}
+.polaroid img{display:block;width:100%;height:100%;object-fit:cover;border-radius:1px;background:#000;}
+.tape{position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-3deg);width:70px;height:22px;background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.05);box-shadow:0 2px 4px rgba(0,0,0,.1);z-index:5;}
+
+/* vertical rotated quote strips flanking the photo */
+.vstrip{position:absolute;z-index:3;font-family:var(--font-body);font-weight:800;font-size:10px;line-height:1.3;color:var(--ink-soft);writing-mode:vertical-rl;letter-spacing:.02em;max-height:150px;}
+.vstrip.left{transform:rotate(180deg);}
+
+/* handwritten "darling" note card */
+.darling-note{position:absolute;z-index:3;background:#fff8ef;border-radius:8px;padding:7px 10px;font-size:10.5px;line-height:1.35;color:var(--ink);box-shadow:0 4px 10px rgba(0,0,0,.12);max-width:104px;text-align:center;font-weight:600;}
+
+.repeat-love,.story-repeat-love{text-align:center;font-family:var(--font-hand);color:var(--burgundy);font-size:14px;line-height:1.3;z-index:3;position:relative;}
+.blur-text{position:absolute;z-index:3;font-family:var(--font-hand);color:var(--dusty-rose);font-size:13px;transform:rotate(-4deg);}
+.kiss-tag{position:absolute;z-index:3;font-size:18px;}
+.final-line{position:absolute;z-index:3;text-align:right;font-size:11px;line-height:1.3;color:var(--ink-soft);}
+.final-line .hand{font-size:15px;color:var(--burgundy);}
+.bow-corner{position:absolute;z-index:3;font-size:24px;}
+
+.hands-illustration{position:absolute;z-index:2;opacity:.9;}
+
+/* notebook message page */
+.notebook,.story-notebook{flex:1;margin:20px;border-radius:16px;background:repeating-linear-gradient(to bottom,transparent 0 34px,var(--cream-dark) 34px 36px),#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.story-notebook{margin:16px;}
+.notebook::before,.story-notebook::before{content:"";position:absolute;left:34px;top:0;bottom:0;width:2px;background:var(--dusty-rose);opacity:.5;}
+.story-notebook::before{left:30px;}
+.notebook-title,.story-notebook-title{text-align:center;padding:20px 20px 0;}
+.story-notebook-title{padding:16px 16px 0;}
+.user-quote,.story-user-quote{flex:1;min-height:0;overflow:auto;text-align:center;font-size:19px;line-height:1.5;padding:6px 22px;color:var(--ink);}
+.story-user-quote{font-size:17px;padding:6px 18px;}
+.from-tag,.story-from-tag{text-align:center;font-size:19px;color:var(--burgundy);padding-bottom:14px;}
+.story-from-tag{font-size:16px;padding-bottom:12px;}
+
+/* heart reveal page */
+.heart-stage,.story-heart-stage{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px; background:linear-gradient(160deg,#fbdce3,#f6c6d1);}
+.story-heart-stage{gap:18px;}
+.heart-pill,.story-heart-pill{background:#fff; color:var(--burgundy); font-size:13px; font-weight:700; padding:10px 20px; border-radius:999px; box-shadow:0 6px 14px -6px rgba(0,0,0,.2); display:flex; align-items:center; gap:6px;}
+.story-heart-pill{font-size:12px;padding:9px 18px;}
+.heart-btn,.story-heart-btn{width:150px;height:150px;background:none;border:none;cursor:pointer;padding:0;filter:drop-shadow(0 14px 22px rgba(110,36,56,.4)); position:relative;}
+.story-heart-btn{width:120px;height:120px;}
+.heart-btn::after,.story-heart-btn::after{content:""; position:absolute; left:50%; top:100%; width:2px; height:80px; background:rgba(110,36,56,.35); transform:translateX(-50%);}
+.story-heart-btn::after{height:60px;}
+.heart-btn svg,.story-heart-btn svg{width:100%;height:100%;}
+.heart-btn.popped,.story-heart-btn.popped{animation:pop .5s ease forwards;}
+@keyframes pop{0%{transform:scale(1);}40%{transform:scale(1.3) rotate(-4deg);}100%{transform:scale(0);opacity:0;}}
+
+.reveal-modal{position:fixed;inset:0;z-index:40;background:rgba(58,34,38,.75);display:none;align-items:center;justify-content:center;padding:24px;}
+.reveal-modal.show{display:flex;}
+.reveal-card{background:var(--cream);border-radius:24px;padding:18px;max-width:360px;width:100%;text-align:center;box-shadow:0 30px 60px -20px rgba(0,0,0,.5);}
+.reveal-card img{width:100%;border-radius:16px;max-height:60vh;object-fit:cover;}
+.reveal-card p{font-family:var(--font-hand);font-size:22px;color:var(--burgundy);margin:14px 0 4px;}
+
+.nav-dots,.story-dots{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:5;}
+.dot,.story-dot{width:8px;height:8px;border-radius:50%;background:var(--dusty-rose);opacity:.4;}
+.dot.active,.story-dot.active{opacity:1;background:var(--burgundy);}
+.arrow,.story-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:6;background:rgba(255,255,255,.8);border:none;width:42px;height:42px;border-radius:50%;font-size:18px;cursor:pointer;color:var(--burgundy);box-shadow:0 6px 16px -6px rgba(0,0,0,.3);}
+.story-arrow{width:38px;height:38px;font-size:17px;}
+.arrow.prev,.story-arrow.prev{left:8px;} .arrow.next,.story-arrow.next{right:8px;}
+.music-btn,.story-music-btn{position:absolute;top:16px;right:16px;z-index:6;background:rgba(255,255,255,.85);border:none;width:40px;height:40px;border-radius:50%;font-size:17px;cursor:pointer;}
+.story-music-btn{width:36px;height:36px;font-size:15px;}
+
+#startOverlay{position:fixed;inset:0;z-index:50;background:var(--burgundy-dark);color:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px;cursor:pointer;}
+#startOverlay h2{color:var(--cream);font-size:26px;}
+#startOverlay .heartPulse{font-size:52px;animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+.recipient-stage{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;}
+.recipient-page{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:26px 18px;opacity:0;pointer-events:none;transition:opacity .45s ease;}
+.recipient-page.active{opacity:1;pointer-events:auto;}
+.story-page{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:22px 16px;opacity:0;pointer-events:none;transition:opacity .4s ease;}
+.story-page.active{opacity:1;pointer-events:auto;}
+.story-stage{position:relative;height:82vh;min-height:520px;display:flex;align-items:center;justify-content:center;border-radius:26px;overflow:hidden;background:var(--cream-dark);}
+.send-after-review{margin-top:18px;text-align:center;opacity:0;max-height:0;overflow:hidden;transition:opacity .4s ease;}
+.send-after-review.show{opacity:1;max-height:200px;}
+</style>
+</head>
+<body>
+
+<div id="heartBg"></div>
+
+<!-- ============================================================= -->
+<!-- CREATOR APP (visible when the URL has no ?id= card reference) -->
+<!-- ============================================================= -->
+<div class="wrap" id="creatorApp">
+
+  <!-- STEP 1 — FORM -->
+  <div class="step active" id="stepForm">
+    <div class="gf-day-banner">💗 Celebrating Girlfriend's Day · August 1st 💗</div>
+    <div class="eyebrow">for August 1st</div>
+    <h1 class="title">Make her Girlfriend's Day</h1>
+    <p class="sub">Fill this in once — she'll only ever see the finished, romantic version.</p>
+
+    <form class="paper-card" id="cardForm">
+      <div class="row2">
+        <div class="field">
+          <label for="fromName">Your name</label>
+          <input type="text" id="fromName" placeholder="e.g. Arjun" required>
+        </div>
+        <div class="field">
+          <label for="toName" class="req">Her name</label>
+          <input type="text" id="toName" placeholder="e.g. Priya" required>
+          <p class="hint">Required — this is the custom name shown all through her page.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="msg-label-row">
+          <label for="message" style="margin-bottom:0;">Your message to her</label>
+          <button type="button" class="btn btn-ai" id="aiGenBtn">✨ Generate with AI</button>
+        </div>
+        <textarea id="message" rows="5" placeholder="Write what you want her to read on her page… or tap Generate with AI" required></textarea>
+        <p class="hint">This appears on its own page, exactly as you write it. You can edit anything the AI writes.</p>
+      </div>
+
+      <div class="field">
+        <label>Her photos (2 required)</label>
+        <div class="upload-grid" id="uploadGrid">
+          <label class="upload-slot" id="slot0"><input type="file" accept="image/*" data-idx="0"><span>Add photo 1</span></label>
+          <label class="upload-slot" id="slot1"><input type="file" accept="image/*" data-idx="1"><span>Add photo 2</span></label>
+        </div>
+        <p class="upload-note">Both photos are required — one appears on the collage pages, the other opens when she taps the heart.</p>
+      </div>
+
+      <div class="cta-row">
+        <button type="submit" class="btn btn-primary" id="previewBtn">Preview her page →</button>
+      </div>
+      <p class="footer-note">Nothing is sent or charged yet — you'll see the full page first.</p>
+    </form>
+  </div>
+
+  <!-- STEP 2 — FULL PREVIEW (payment only appears once you've reached the last page) -->
+  <div class="step" id="stepPreview">
+    <a href="#" class="back-link" id="backToFormFromPreview">← back to edit</a>
+    <h1 class="title" style="font-size:26px;">Here's her page</h1>
+    <p class="sub" style="margin-bottom:16px;">Swipe or use the arrows to see all four pages.</p>
+
+    <div class="story-stage">
+      <button class="story-music-btn" id="storyMusicBtn">🔈</button>
+
+      <!-- PAGE 0 — reference-style collage with photo 1 -->
+      <div class="story-page active" data-page="0">
+        <div class="story-frame textured" id="storyCollageA">
+          <div class="story-torn-edge"></div>
+          <div class="story-sticker" style="top:6px;left:6px;font-size:26px;">💐</div>
+          <div class="story-sticker" style="top:2px;left:45%;font-size:20px;">🧿</div>
+          <div class="story-tag" style="top:22px;right:8px;transform:rotate(6deg);">Happiness</div>
+          <div class="story-tag dark" style="top:52px;left:8px;transform:rotate(-6deg);">Cutie</div>
+          <div class="story-speech-tag" style="top:44px;left:36%;transform:rotate(-3deg);">"You're my favorite person."</div>
+          <div class="vstrip left" style="top:80px;left:10px;">You are my sun, my moon,</div>
+          <div class="vstrip" style="top:78px;right:10px;">You make me happy in a way no one else can</div>
+          <div class="darling-note hand" style="top:118px;left:8px;font-size:12px;">My darling, all I want is to be your moon and show you all the little stars of my heart.</div>
+          <div class="polaroid" style="margin:0 auto;position:absolute;top:100px;left:50%;transform:translateX(-50%);width:150px;height:190px;">
+            <div class="tape"></div>
+            <img id="previewPhoto1" src="" style="width:100%;height:158px;">
+          </div>
+          <div class="story-sticker" style="bottom:96px;left:6px;font-size:26px;">🧸</div>
+          <div class="story-tag" style="bottom:112px;left:34px;transform:rotate(-4deg);font-size:8.5px;">I LOVE YOU</div>
+          <div class="story-sticker" style="bottom:96px;right:8px;font-size:24px;">🐼</div>
+          <p class="story-repeat-love hand" style="position:absolute;bottom:64px;left:12px;right:12px;">i love you, i love you,<br>i love you, i love you.</p>
+          <div class="blur-text" style="bottom:56px;right:10px;font-size:11px;">but here I<br>blur into you</div>
+          <div class="story-tag" style="bottom:26px;left:8px;transform:rotate(-4deg);">my beautiful<br>dream</div>
+          <div class="story-sticker" style="bottom:6px;left:70px;font-size:20px;">💐</div>
+          <div class="kiss-tag" style="bottom:10px;right:56px;">💋</div>
+          <div class="bow-corner" style="bottom:6px;right:8px;">🎀</div>
+        </div>
+      </div>
+
+      <!-- PAGE 1 — her message -->
+      <div class="story-page" data-page="1">
+        <div class="story-frame">
+          <div class="story-sticker" style="top:8px; left:10px; font-size:22px;">🌷</div>
+          <div class="story-sticker" style="top:10px; right:12px; font-size:17px;">⭐</div>
+          <div class="story-sticker" style="bottom:10px; left:8px; font-size:18px;">📖</div>
+          <div class="story-sticker" style="bottom:10px; right:12px; font-size:18px;">🌹</div>
+          <div class="story-notebook-title"><h3 style="font-size:15px;">A little something for <span id="previewToNameB"></span></h3></div>
+          <div class="story-notebook">
+            <div class="story-user-quote hand" id="previewMessageBody"></div>
+          </div>
+          <div class="story-from-tag hand">— <span id="previewFromNameB"></span></div>
+        </div>
+      </div>
+
+      <!-- PAGE 2 — collage with photo 2 -->
+      <div class="story-page" data-page="2">
+        <div class="story-frame" style="background:linear-gradient(160deg,#fdf1e7,#f8dbe1);">
+          <div class="story-sticker" style="top:8px; left:10px; font-size:20px;">🌻</div>
+          <div class="story-sticker" style="top:8px; right:12px; font-size:18px;">🎈</div>
+          <div class="story-tag" style="top:36px; right:12px; transform:rotate(5deg);">Happiness</div>
+          <div class="story-tag dark" style="top:68px; left:10px; transform:rotate(-5deg);">Sweetheart</div>
+          <div class="story-speech-tag" style="top:34px; left:42%; transform:rotate(-3deg);">you're my favourite person.</div>
+          <div class="polaroid" style="margin:56px auto 6px;width:140px;">
+            <div class="tape"></div>
+            <img id="previewPhoto2" src="" style="width:100%;height:150px;">
+          </div>
+          <div class="story-speech-tag" style="bottom:84px; right:4px; transform:rotate(4deg);">you make me happy in a way no one else can.</div>
+          <div class="story-sticker" style="bottom:48px; right:16px; font-size:20px;">🐻</div>
+          <div class="story-sticker" style="bottom:14px; left:18px; font-size:18px;">🐼</div>
+          <div class="story-sticker" style="bottom:14px; right:38px; font-size:16px;">💋</div>
+          <p class="story-quote-line hand" style="text-align:center;color:#c9384a;font-size:16px;padding-bottom:14px;">i love you, <span id="previewToNameC"></span></p>
+        </div>
+      </div>
+
+      <!-- PAGE 3 — heart reveal -->
+      <div class="story-page" data-page="3">
+        <div class="story-frame">
+          <div class="story-heart-stage">
+            <h3 style="font-size:17px;">Open the Heart 🤍</h3>
+            <div class="story-heart-pill">💗 1 heart — tap to open!</div>
+            <button class="story-heart-btn" id="previewHeartBtn" aria-label="Open the heart">
+              <svg viewBox="0 0 24 22" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#c9384a" d="M12 21s-8.5-5.2-11-10.2C-.5 6 2 2 6 2c2.2 0 3.9 1.2 6 4 2.1-2.8 3.8-4 6-4 4 0 6.5 4 5 8.8C20.5 15.8 12 21 12 21z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="story-arrow prev" id="storyPrevBtn">‹</button>
+      <button class="story-arrow next" id="storyNextBtn">›</button>
+      <div class="story-dots" id="storyDots"></div>
+    </div>
+
+    <div class="send-after-review" id="sendAfterReview">
+      <p class="hint" style="margin-bottom:10px;">Seen it all? This is the point of no return — she'll get a link once you pay.</p>
+      <button class="btn btn-gold" id="goToPaymentBtn">Looks perfect — send to her, ₹129 →</button>
+    </div>
+  </div>
+
+  <div class="reveal-modal" id="previewRevealModal">
+    <div class="reveal-card">
+      <img id="previewRevealImg" src="" alt="">
+      <p class="hand">for you, always.</p>
+      <button class="btn btn-primary" id="previewCloseReveal" style="margin-top:10px;">Close</button>
+    </div>
+  </div>
+
+  <audio id="previewMusic" loop src="music/romantic-theme.mp3"></audio>
+
+  <!-- STEP 3 — PAYMENT -->
+  <div class="step" id="stepPayment">
+    <a href="#" class="back-link" id="backToForm">← back to preview</a>
+    <h1 class="title">Almost there 💗</h1>
+    <p class="sub">Review the price, add a coupon if you have one, then send it her way.</p>
+
+    <div class="paper-card" id="payCard">
+      <div class="price-row">
+        <span class="price-was" id="priceWas" style="display:none;"></span>
+        <span class="price-now" id="priceNow">₹129</span>
+      </div>
+      <div class="summary-line"><span>Girlfriend's Day page</span><span id="lineTotal">₹129</span></div>
+      <div class="summary-line" id="lineDiscountRow" style="display:none;"><span>Discount</span><span id="lineDiscount"></span></div>
+
+      <div class="field" style="margin-top:18px;">
+        <label for="couponInput">Coupon code</label>
+        <div class="coupon-row">
+          <input type="text" id="couponInput" placeholder="e.g. AUGUST1">
+          <button type="button" class="btn btn-ghost btn-sm" id="applyCouponBtn">Apply</button>
+        </div>
+        <p class="coupon-msg" id="couponMsg"></p>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn btn-primary" id="payBtn">Pay &amp; get her link</button>
+      </div>
+    </div>
+
+    <div class="paper-card link-box" id="linkBox">
+      <h3 style="text-align:center;">It's ready! 🎉</h3>
+      <p style="text-align:center;color:var(--ink-soft);font-size:14px;">Send this link to her — no payment needed on her end.</p>
+      <div class="link-field">
+        <input type="text" id="finalLink" readonly>
+        <button class="btn btn-primary" id="copyLinkBtn">Copy</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================= -->
+<!-- RECIPIENT APP (visible when the URL has ?id=<cardId>)          -->
+<!-- ============================================================= -->
+<div id="recipientApp" style="display:none;">
+  <div id="startOverlay">
+    <div class="heartPulse">💗</div>
+    <h2 class="hand" style="font-size:30px;">Tap to begin</h2>
+    <p style="opacity:.85; font-size:14px; max-width:260px;">Best with sound on.</p>
+  </div>
+
+  <div class="recipient-stage">
+    <button class="music-btn" id="musicBtn">🔈</button>
+
+    <!-- PAGE 0 — reference-style collage, photo 1 -->
+    <div class="recipient-page active" data-page="0">
+      <div class="frame-card textured">
+        <div class="torn-edge"></div>
+        <div class="sticker" style="top:8px;left:8px;font-size:32px;">💐</div>
+        <div class="sticker" style="top:2px;left:45%;font-size:24px;">🧿</div>
+        <div class="tag" style="top:26px;right:10px;transform:rotate(6deg);">Happiness</div>
+        <div class="tag dark" style="top:60px;left:10px;transform:rotate(-6deg);">Cutie</div>
+        <div class="speech-tag" style="top:52px;left:36%;transform:rotate(-3deg);">"You're my favorite person, <span id="toNameCollage"></span>."</div>
+        <div class="vstrip left" style="top:96px;left:12px;">You are my sun, my moon,</div>
+        <div class="vstrip" style="top:92px;right:12px;">You make me happy in a way no one else can</div>
+        <div class="darling-note hand" style="top:138px;left:10px;font-size:13px;">My darling, all I want is to be your moon and show you all the little stars of my heart.</div>
+        <div class="polaroid" style="position:absolute;top:118px;left:50%;transform:translateX(-50%);width:172px;">
+          <div class="tape"></div>
+          <img id="photo1" src="" style="width:100%;height:218px;">
+        </div>
+        <div class="sticker" style="bottom:114px;left:10px;font-size:30px;">🧸</div>
+        <div class="tag" style="bottom:132px;left:42px;transform:rotate(-4deg);font-size:9.5px;">I LOVE YOU</div>
+        <div class="sticker" style="bottom:112px;right:10px;font-size:28px;">🐼</div>
+        <p class="repeat-love hand" style="position:absolute;bottom:74px;left:16px;right:16px;">i love you, i love you, i love you, i love you.</p>
+        <div class="blur-text" style="bottom:64px;right:14px;font-size:13px;">but here I<br>blur into you</div>
+        <div class="tag" style="bottom:30px;left:10px;transform:rotate(-4deg);">my beautiful<br>dream</div>
+        <div class="sticker" style="bottom:8px;left:78px;font-size:22px;">💐</div>
+        <div class="kiss-tag" style="bottom:12px;right:64px;font-size:20px;">💋</div>
+        <div class="bow-corner" style="bottom:8px;right:10px;">🎀</div>
+      </div>
+    </div>
+
+    <!-- PAGE 1 — her message -->
+    <div class="recipient-page" data-page="1">
+      <div class="frame-card">
+        <div class="sticker" style="top:10px; left:12px; font-size:28px;">🌷</div>
+        <div class="sticker" style="top:12px; right:14px; font-size:20px;">⭐</div>
+        <div class="sticker" style="bottom:14px; left:10px; font-size:22px;">📖</div>
+        <div class="sticker" style="bottom:14px; right:14px; font-size:22px;">🌹</div>
+        <div class="notebook-title"><h3 style="font-size:18px;">A little something for <span id="toNameB"></span></h3></div>
+        <div class="notebook">
+          <div class="user-quote hand" id="messageBody" style="font-size:21px; -webkit-line-clamp:unset;"></div>
+        </div>
+        <div class="from-tag hand">— <span id="fromNameB"></span></div>
+      </div>
+    </div>
+
+    <!-- PAGE 2 — collage, photo 2 -->
+    <div class="recipient-page" data-page="2">
+      <div class="frame-card" style="background:linear-gradient(160deg,#fdf1e7,#f8dbe1);">
+        <div class="sticker" style="top:10px; left:12px; font-size:24px;">🌻</div>
+        <div class="sticker" style="top:10px; right:14px; font-size:22px;">🎈</div>
+        <div class="tag" style="position:absolute; top:44px; right:14px; transform:rotate(5deg); z-index:2;">Happiness</div>
+        <div class="tag dark" style="position:absolute; top:82px; left:12px; transform:rotate(-5deg); z-index:2;">Sweetheart</div>
+        <div class="speech-tag" style="top:40px; left:44%; transform:rotate(-3deg);">you're my favourite person.</div>
+        <div class="polaroid" style="margin:66px auto 8px;width:190px;">
+          <div class="tape"></div>
+          <img id="photo2" src="" style="width:100%;height:200px;">
+        </div>
+        <div class="speech-tag" style="bottom:96px; right:6px; transform:rotate(4deg);">you make me happy in a way no one else can.</div>
+        <div class="sticker" style="bottom:58px; right:18px; font-size:24px;">🐻</div>
+        <div class="sticker" style="bottom:16px; left:20px; font-size:22px;">🐼</div>
+        <div class="sticker" style="bottom:16px; right:44px; font-size:18px;">💋</div>
+        <p class="quote-line hand" style="text-align:center;color:#c9384a;font-size:19px;margin-top:8px;padding-bottom:16px;">i love you, <span id="toNameC"></span></p>
+      </div>
+    </div>
+
+    <!-- PAGE 3 — heart reveal -->
+    <div class="recipient-page" data-page="3">
+      <div class="frame-card">
+        <div class="heart-stage">
+          <div class="heart-hint"><h3 style="font-size:20px;">Open the Heart 🤍</h3></div>
+          <div class="heart-pill">💗 1 heart — tap to open!</div>
+          <button class="heart-btn" id="heartBtn" aria-label="Open the heart">
+            <svg viewBox="0 0 24 22" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#c9384a" d="M12 21s-8.5-5.2-11-10.2C-.5 6 2 2 6 2c2.2 0 3.9 1.2 6 4 2.1-2.8 3.8-4 6-4 4 0 6.5 4 5 8.8C20.5 15.8 12 21 12 21z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button class="arrow prev" id="prevBtn">‹</button>
+    <button class="arrow next" id="nextBtn">›</button>
+    <div class="nav-dots" id="dots"></div>
+  </div>
+
+  <div class="reveal-modal" id="revealModal">
+    <div class="reveal-card">
+      <img id="revealImg" src="" alt="">
+      <p class="hand">for you, always.</p>
+      <button class="btn btn-primary" id="closeReveal" style="margin-top:10px;">Close</button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" loop src="music/romantic-theme.mp3"></audio>
+</div>
+
+<script>
+/* =====================================================================
+   ONE-TIME SUPABASE SETUP — run this SQL once in the Supabase SQL editor
+   (Project → SQL Editor → New query → paste → Run), then create a public
+   storage bucket named "photos" (Storage → New bucket → public ON).
+
+   create extension if not exists "pgcrypto";
+
+   create table if not exists cards (
+     id uuid primary key default gen_random_uuid(),
+     "fromName" text not null,
+     "toName" text not null,
+     message text not null,
+     "photoUrls" jsonb not null default '[]'::jsonb,
+     paid boolean not null default false,
+     payment_id text,
+     created_at timestamptz not null default now()
+   );
+
+   alter table cards enable row level security;
+
+   create policy "insert own card" on cards
+     for insert with check (true);
+
+   create policy "read any card" on cards
+     for select using (true);
+
+   -- Storage bucket policies (run after creating the "photos" bucket):
+   create policy "public read photos" on storage.objects
+     for select using (bucket_id = 'photos');
+
+   create policy "anyone can upload photos" on storage.objects
+     for insert with check (bucket_id = 'photos');
+
+   Paste your project URL + anon key below so links work on any device.
+   Until then, everything falls back to localStorage on the same browser.
+===================================================================== */
+const SUPABASE_URL = "https://ophnjvpuhoplehzfblsu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9waG5qdnB1aG9wbGVoemZibHN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMjM4MjAsImV4cCI6MjEwMDY5OTgyMH0.Areq5ybLdztNDleqGiLJCizpOkDcXRlznlu4jpDqQb8";
+const SUPABASE_TABLE = "cards";
+const SUPABASE_BUCKET = "photos";
+
+const COUPONS = {
+  "LOVE10":    { type: "percent", value: 10, label: "10% off" },
+  "FIRSTLOVE": { type: "flat",    value: 29, label: "₹29 off" },
+  "AUGUST1":   { type: "percent", value: 20, label: "20% off — Girlfriend's Day special" }
+};
+const BASE_PRICE_INR = 129;
+const RAZORPAY_KEY_ID = "rzp_live_TH7gs9nI1yjgD8";
+
+/* ---------- floating heart bubbles (decorative, runs everywhere) ---------- */
+(function heartBubbles(){
+  const host = document.getElementById('heartBg');
+  const glyphs = ['💗','💕','💖','🩷','❤️','💞'];
+  const COUNT = 22;
+  for (let i = 0; i < COUNT; i++){
+    const el = document.createElement('span');
+    el.className = 'floaty';
+    el.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const size = 14 + Math.random()*22;
+    el.style.left = Math.random()*100 + 'vw';
+    el.style.fontSize = size + 'px';
+    el.style.setProperty('--drift', (Math.random()*80-40) + 'px');
+    const duration = 10 + Math.random()*14;
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = (-Math.random()*duration) + 's';
+    host.appendChild(el);
+  }
+})();
+
+/* ---------- AI-style romantic message generator (template based, no key needed) ---------- */
+function generateAIMessage(toName, fromName){
+  const her = toName && toName.trim() ? toName.trim() : "you";
+  const me = fromName && fromName.trim() ? fromName.trim() : "me";
+  const templates = [
+    `Happy Girlfriend's Day, ${her}. Every ordinary day turns into my favorite one the moment you're in it. Thank you for your laugh, your patience, and the way you make even quiet moments feel like home. I love you more than these words can hold.\n\n— ${me}`,
+    `${her}, you are the softest, warmest part of my everyday life. On Girlfriend's Day I just want to say thank you — for choosing me, for staying, for loving me so gently and so fiercely at once. Here's to many more of our little moments.\n\n— ${me}`,
+    `To my favorite person, ${her} — happy Girlfriend's Day. You are my sun on the cloudy days and my calm on the loud ones. I don't think I say it enough, so let this be proof: I love you, today and every day after.\n\n— ${me}`,
+    `${her}, being with you feels like the best kind of surprise, every single time. Happy Girlfriend's Day to the girl who made my ordinary life extraordinary. Thank you for everything you are.\n\n— ${me}`,
+    `Some people search their whole life for a love like ours, ${her}. I just got lucky. Happy Girlfriend's Day — thank you for your heart, your patience, and every little way you make me feel loved.\n\n— ${me}`
+  ];
+  return templates[Math.floor(Math.random()*templates.length)];
+}
+document.getElementById('aiGenBtn')?.addEventListener('click', () => {
+  const toName = document.getElementById('toName').value;
+  const fromName = document.getElementById('fromName').value;
+  document.getElementById('message').value = generateAIMessage(toName, fromName);
+});
+
+/* ---------- shared helpers ---------- */
+let supabaseClient = null;
+function getSupabase(){
+  if (supabaseClient) return supabaseClient;
+  if (!window.supabase || SUPABASE_URL.startsWith("PASTE_")) return null;
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return supabaseClient;
+}
+function uid(){
+  return crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+}
+function rupees(n){ return "₹" + Number(n).toFixed(0); }
+function applyCoupon(code, base = BASE_PRICE_INR){
+  const c = COUPONS[(code || "").trim().toUpperCase()];
+  if (!c) return { valid:false, amount: base, label:null };
+  let amount = c.type === "percent" ? base - Math.round(base * c.value / 100) : base - c.value;
+  amount = Math.max(amount, 1);
+  return { valid:true, amount, label:c.label };
+}
+function fileToDataUrl(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+async function uploadPhotoToSupabase(file){
+  const sb = getSupabase();
+  if (!sb) return await fileToDataUrl(file);
+  const path = `${uid()}-${file.name}`;
+  const { error } = await sb.storage.from(SUPABASE_BUCKET).upload(path, file);
+  if (error) { console.error(error); return await fileToDataUrl(file); }
+  const { data } = sb.storage.from(SUPABASE_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
+async function saveCard(card){
+  const sb = getSupabase();
+  const id = uid();
+  const row = { id, ...card, paid: true, created_at: new Date().toISOString() };
+  if (!sb){
+    console.warn("Supabase not configured yet — saving locally only.");
+    localStorage.setItem("gfday_card_" + id, JSON.stringify(row));
+    return id;
+  }
+  const { error } = await sb.from(SUPABASE_TABLE).insert(row);
+  if (error) { console.error(error); localStorage.setItem("gfday_card_" + id, JSON.stringify(row)); }
+  return id;
+}
+async function loadCard(id){
+  const sb = getSupabase();
+  if (sb){
+    const { data, error } = await sb.from(SUPABASE_TABLE).select("*").eq("id", id).single();
+    if (!error && data) return data;
+  }
+  const local = localStorage.getItem("gfday_card_" + id);
+  return local ? JSON.parse(local) : null;
+}
+function saveDraft(data){ sessionStorage.setItem("gfday_draft", JSON.stringify(data)); }
+function loadDraft(){
+  try { return JSON.parse(sessionStorage.getItem("gfday_draft") || "null"); }
+  catch(e){ return null; }
+}
+
+/* =====================================================================
+   ROUTING: this single file plays two roles.
+   - No ?id= in the URL  -> creator flow (form → preview → payment)
+   - ?id=<cardId>         -> recipient view (her finished page)
+===================================================================== */
+const urlParams = new URLSearchParams(location.search);
+const cardId = urlParams.get('id');
+
+if (cardId){
+  document.getElementById('creatorApp').style.display = 'none';
+  document.getElementById('recipientApp').style.display = 'block';
+  initRecipientView(cardId);
+} else {
+  initCreatorFlow();
+}
+
+/* ---------------------------- CREATOR FLOW ---------------------------- */
+function initCreatorFlow(){
+  const photos = [null, null];
+
+  document.querySelectorAll('#uploadGrid input[type="file"]').forEach(input => {
+    input.addEventListener('change', async (e) => {
+      const idx = Number(e.target.dataset.idx);
+      const file = e.target.files[0];
+      if (!file) return;
+      const dataUrl = await fileToDataUrl(file);
+      photos[idx] = { file, previewUrl: dataUrl };
+      const slot = document.getElementById('slot' + idx);
+      slot.innerHTML = `<img src="${dataUrl}" alt="">`;
+      slot.appendChild(input);
+    });
+  });
+
+  document.getElementById('cardForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fromName = document.getElementById('fromName').value.trim();
+    const toName = document.getElementById('toName').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    if (!toName) { alert("Her name is required."); return; }
+    if (!photos[0] || !photos[1]) { alert("Please add both photos (2 required)."); return; }
+
+    const btn = document.getElementById('previewBtn');
+    btn.disabled = true; btn.textContent = "Preparing…";
+
+    const photoUrls = [];
+    for (const p of photos) { photoUrls.push(await uploadPhotoToSupabase(p.file)); }
+
+    saveDraft({ fromName, toName, message, photoUrls, paid:false });
+    btn.disabled = false; btn.textContent = "Preview her page →";
+
+    populatePreview({ fromName, toName, message, photoUrls });
+
+    document.getElementById('stepForm').classList.remove('active');
+    document.getElementById('stepPreview').classList.add('active');
+    storyShow(0);
+    window.scrollTo(0,0);
+  });
+
+  document.getElementById('backToFormFromPreview').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('stepPreview').classList.remove('active');
+    document.getElementById('stepForm').classList.add('active');
+  });
+
+  document.getElementById('backToForm').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('stepPayment').classList.remove('active');
+    document.getElementById('stepPreview').classList.add('active');
+  });
+
+  function populatePreview({ fromName, toName, message, photoUrls }){
+    document.getElementById('previewToNameB').textContent = toName;
+    document.getElementById('previewFromNameB').textContent = fromName;
+    document.getElementById('previewMessageBody').textContent = message;
+    document.getElementById('previewToNameC').textContent = toName;
+    if (photoUrls[0]) document.getElementById('previewPhoto1').src = photoUrls[0];
+    if (photoUrls[1]) document.getElementById('previewPhoto2').src = photoUrls[1];
+    document.getElementById('previewRevealImg').src = photoUrls[1] || photoUrls[0] || '';
+  }
+
+  const storyPages = [...document.querySelectorAll('.story-page')];
+  const storyDotsWrap = document.getElementById('storyDots');
+  storyPages.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'story-dot' + (i === 0 ? ' active' : '');
+    storyDotsWrap.appendChild(d);
+  });
+  const storyDots = [...storyDotsWrap.children];
+  let storyCurrent = 0;
+  function storyShow(i){
+    storyCurrent = Math.max(0, Math.min(storyPages.length - 1, i));
+    storyPages.forEach((p, idx) => p.classList.toggle('active', idx === storyCurrent));
+    storyDots.forEach((d, idx) => d.classList.toggle('active', idx === storyCurrent));
+    if (storyCurrent === storyPages.length - 1) document.getElementById('sendAfterReview').classList.add('show');
+  }
+  document.getElementById('storyNextBtn').addEventListener('click', () => storyShow(storyCurrent + 1));
+  document.getElementById('storyPrevBtn').addEventListener('click', () => storyShow(storyCurrent - 1));
+
+  let storyTouchX = null;
+  document.querySelector('.story-stage').addEventListener('touchstart', e => storyTouchX = e.touches[0].clientX);
+  document.querySelector('.story-stage').addEventListener('touchend', e => {
+    if (storyTouchX === null) return;
+    const dx = e.changedTouches[0].clientX - storyTouchX;
+    if (dx > 50) storyShow(storyCurrent - 1);
+    else if (dx < -50) storyShow(storyCurrent + 1);
+    storyTouchX = null;
+  });
+
+  document.getElementById('previewHeartBtn').addEventListener('click', function(){
+    this.classList.add('popped');
+    setTimeout(() => document.getElementById('previewRevealModal').classList.add('show'), 350);
+  });
+  document.getElementById('previewCloseReveal').addEventListener('click', () => {
+    document.getElementById('previewRevealModal').classList.remove('show');
+  });
+
+  const previewMusic = document.getElementById('previewMusic');
+  document.getElementById('storyMusicBtn').addEventListener('click', function(){
+    if (previewMusic.paused){ previewMusic.volume = 0.5; previewMusic.play().catch(()=>{}); this.textContent = '🔊'; }
+    else { previewMusic.pause(); this.textContent = '🔈'; }
+  });
+
+  document.getElementById('goToPaymentBtn').addEventListener('click', () => {
+    document.getElementById('stepPreview').classList.remove('active');
+    document.getElementById('stepPayment').classList.add('active');
+    window.scrollTo(0,0);
+  });
+
+  let currentAmount = BASE_PRICE_INR;
+  function renderSummary(discountLabel, amount){
+    document.getElementById('lineTotal').textContent = rupees(amount);
+    document.getElementById('priceNow').textContent = rupees(amount);
+    if (amount < BASE_PRICE_INR){
+      document.getElementById('priceWas').style.display = 'inline';
+      document.getElementById('priceWas').textContent = rupees(BASE_PRICE_INR);
+      document.getElementById('lineDiscountRow').style.display = 'flex';
+      document.getElementById('lineDiscount').textContent = '–' + rupees(BASE_PRICE_INR - amount) + (discountLabel ? ' · ' + discountLabel : '');
+    } else {
+      document.getElementById('priceWas').style.display = 'none';
+      document.getElementById('lineDiscountRow').style.display = 'none';
+    }
+  }
+
+  document.getElementById('applyCouponBtn').addEventListener('click', () => {
+    const code = document.getElementById('couponInput').value;
+    const res = applyCoupon(code);
+    const msg = document.getElementById('couponMsg');
+    if (!code.trim()) { msg.textContent = ''; currentAmount = BASE_PRICE_INR; renderSummary(null, currentAmount); return; }
+    if (res.valid){
+      currentAmount = res.amount;
+      msg.textContent = `Applied: ${res.label}`;
+      msg.className = 'coupon-msg ok';
+      renderSummary(res.label, currentAmount);
+    } else {
+      currentAmount = BASE_PRICE_INR;
+      msg.textContent = "That code isn't valid.";
+      msg.className = 'coupon-msg err';
+      renderSummary(null, currentAmount);
+    }
+  });
+
+  document.getElementById('payBtn').addEventListener('click', () => {
+    const draft = loadDraft();
+    if (!draft) { alert("Please fill in the form first."); return; }
+
+    const options = {
+      key: RAZORPAY_KEY_ID,
+      amount: currentAmount * 100,
+      currency: "INR",
+      name: "Girlfriend's Day",
+      description: `A page made by ${draft.fromName} for ${draft.toName}`,
+      handler: async function (response) {
+        const id = await saveCard({ ...draft, paid: true, payment_id: response.razorpay_payment_id });
+        const url = new URL(window.location.href);
+        url.search = '';
+        url.searchParams.set('id', id);
+        document.getElementById('finalLink').value = url.toString();
+        document.getElementById('payCard').style.display = 'none';
+        document.getElementById('linkBox').classList.add('show');
+      },
+      theme: { color: "#6e2438" }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+
+  document.getElementById('copyLinkBtn').addEventListener('click', () => {
+    const field = document.getElementById('finalLink');
+    field.select();
+    navigator.clipboard?.writeText(field.value);
+    const btn = document.getElementById('copyLinkBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+
+/* ---------------------------- RECIPIENT VIEW ---------------------------- */
+async function initRecipientView(id){
+  const card = await loadCard(id);
+  if (!card) {
+    document.body.innerHTML = `<div style="padding:60px 24px;text-align:center;font-family:sans-serif;position:relative;z-index:1;">This link isn't valid or has expired.</div>`;
+    return;
+  }
+
+  document.getElementById('toNameCollage').textContent = card.toName;
+  document.getElementById('toNameB').textContent = card.toName;
+  document.getElementById('fromNameB').textContent = card.fromName;
+  document.getElementById('messageBody').textContent = card.message;
+  document.getElementById('toNameC').textContent = card.toName;
+
+  const urls = card.photoUrls || [];
+  if (urls[0]) document.getElementById('photo1').src = urls[0];
+  if (urls[1]) document.getElementById('photo2').src = urls[1];
+  document.getElementById('revealImg').src = urls[1] || urls[0] || '';
+
+  const audioEl = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('musicBtn');
+  musicBtn.addEventListener('click', () => {
+    if (audioEl.paused){ audioEl.volume = 0.55; audioEl.play().catch(()=>{}); musicBtn.textContent = '🔊'; }
+    else { audioEl.pause(); musicBtn.textContent = '🔈'; }
+  });
+  document.getElementById('startOverlay').addEventListener('click', function(){
+    this.remove();
+    audioEl.volume = 0.55;
+    audioEl.play().catch(()=>{});
+    musicBtn.textContent = '🔊';
+  }, { once:true });
+
+  const pages = [...document.querySelectorAll('.recipient-page')];
+  const dotsWrap = document.getElementById('dots');
+  pages.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    dotsWrap.appendChild(d);
+  });
+  const dots = [...dotsWrap.children];
+  let current = 0;
+  function show(i){
+    current = Math.max(0, Math.min(pages.length - 1, i));
+    pages.forEach((p, idx) => p.classList.toggle('active', idx === current));
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === current));
+  }
+  document.getElementById('nextBtn').addEventListener('click', () => show(current + 1));
+  document.getElementById('prevBtn').addEventListener('click', () => show(current - 1));
+
+  let touchX = null;
+  document.querySelector('.recipient-stage').addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+  document.querySelector('.recipient-stage').addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (dx > 50) show(current - 1);
+    else if (dx < -50) show(current + 1);
+    touchX = null;
+  });
+
+  document.getElementById('heartBtn').addEventListener('click', function(){
+    this.classList.add('popped');
+    setTimeout(() => document.getElementById('revealModal').classList.add('show'), 350);
+  });
+  document.getElementById('closeReveal').addEventListener('click', () => {
+    document.getElementById('revealModal').classList.remove('show');
+  });
+}
+</script>
+</body>
+</html>
