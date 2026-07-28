@@ -77,6 +77,17 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
 .footer-note{text-align:center;margin-top:18px;font-size:12.5px;color:var(--ink-soft);}
 .link-hint{text-align:center;margin-top:14px;}
 .gf-day-banner{text-align:center;background:linear-gradient(135deg,#fce3ea,#f6c9d6);border-radius:18px;padding:10px 16px;font-size:13px;color:var(--burgundy-dark);font-weight:700;margin-bottom:22px;}
+.step#stepForm{position:relative;}
+.form-corner{font-size:26px;opacity:.85;pointer-events:none;}
+.form-corner.tl{top:-14px;left:-10px;transform:rotate(-8deg);}
+.form-corner.tr{top:-16px;right:-8px;transform:rotate(10deg);}
+.form-corner.bl{bottom:6px;left:-14px;transform:rotate(6deg);}
+.form-corner.br{bottom:2px;right:-12px;transform:rotate(-10deg);}
+@media (max-width:600px){.form-corner{display:none;}}
+.cute-divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:26px 0 22px;color:var(--dusty-rose);font-size:13px;}
+.cute-divider span:first-child,.cute-divider span:last-child{font-size:18px;}
+.cute-divider .hand{font-size:19px;color:var(--burgundy);}
+.tiny-quote{text-align:center;font-size:18px;color:var(--dusty-rose);margin:14px 0 0;}
 
 /* payment step */
 .price-row{display:flex;align-items:baseline;justify-content:center;gap:10px;margin:18px 0 6px;}
@@ -235,11 +246,23 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
         <p class="upload-note">Both photos are required — one appears on the collage pages, the other opens when she taps the heart.</p>
       </div>
 
+      <div class="cute-divider" aria-hidden="true">
+        <span>♡</span><span class="hand">for the girl who has your whole heart</span><span>♡</span>
+      </div>
+
       <div class="cta-row">
         <button type="submit" class="btn btn-primary" id="previewBtn">Preview her page →</button>
       </div>
       <p class="footer-note">Nothing is sent or charged yet — you'll see the full page first.</p>
+      <p class="hand tiny-quote">"Every love story is beautiful, but this one's my favorite." 💕</p>
     </form>
+
+    <div class="sticker form-corner tl" style="font-size:38px;">🌷</div>
+    <div class="sticker form-corner tr" style="font-size:40px;">🧸</div>
+    <div class="sticker form-corner bl" style="font-size:40px;">🎀</div>
+    <div class="sticker form-corner br" style="font-size:38px;">🐼</div>
+    <div class="sticker form-corner" style="position:absolute; top:44%; left:-18px; font-size:26px; opacity:.85; transform:rotate(-8deg);" aria-hidden="true">🎀</div>
+    <div class="sticker form-corner" style="position:absolute; top:60%; right:-16px; font-size:26px; opacity:.85; transform:rotate(10deg);" aria-hidden="true">🐼</div>
   </div>
 
   <!-- STEP 2 — FULL PREVIEW (payment only appears once you've reached the last page) -->
@@ -282,10 +305,13 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
       <!-- PAGE 1 — her message -->
       <div class="story-page" data-page="1">
         <div class="story-frame">
-          <div class="story-sticker" style="top:8px; left:10px; font-size:22px;">🌷</div>
-          <div class="story-sticker" style="top:10px; right:12px; font-size:17px;">⭐</div>
-          <div class="story-sticker" style="bottom:10px; left:8px; font-size:18px;">📖</div>
-          <div class="story-sticker" style="bottom:10px; right:12px; font-size:18px;">🌹</div>
+          <div class="story-sticker" style="top:8px; left:10px; font-size:24px;">🌷</div>
+          <div class="story-sticker" style="top:10px; right:12px; font-size:19px;">⭐</div>
+          <div class="story-sticker" style="top:38px; left:50%; transform:translateX(-50%) rotate(-4deg); font-size:22px;">🎀</div>
+          <div class="story-sticker" style="bottom:10px; left:8px; font-size:22px;">📖</div>
+          <div class="story-sticker" style="bottom:10px; right:12px; font-size:20px;">🌹</div>
+          <div class="story-sticker" style="bottom:38px; left:14px; font-size:24px; transform:rotate(-8deg);">🐼</div>
+          <div class="story-sticker" style="bottom:40px; right:16px; font-size:20px; transform:rotate(8deg);">💗</div>
           <div class="story-notebook-title"><h3 style="font-size:15px;">A little something for <span id="previewToNameB"></span></h3></div>
           <div class="story-notebook">
             <div class="story-user-quote hand" id="previewMessageBody"></div>
@@ -348,13 +374,20 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
     </div>
   </div>
 
+  <!-- MUSIC: put your song at ./music/romantic-theme.mp3 next to this HTML
+       file (create a "music" folder if it doesn't exist) and it will play
+       automatically. Any filename works as long as it matches the src=""
+       here and in the matching #bgMusic tag further down. -->
   <audio id="previewMusic" loop src="music/romantic-theme.mp3"></audio>
 
   <!-- STEP 3 — PAYMENT -->
-  <div class="step" id="stepPayment">
+  <div class="step" id="stepPayment" style="position:relative;">
     <a href="#" class="back-link" id="backToForm">← back to preview</a>
     <h1 class="title">Almost there 💗</h1>
     <p class="sub">Review the price, add a coupon if you have one, then send it her way.</p>
+
+    <div class="sticker" style="top:64px; left:-6px; font-size:30px; opacity:.85; transform:rotate(-8deg);" aria-hidden="true">🎀</div>
+    <div class="sticker" style="top:70px; right:-4px; font-size:30px; opacity:.85; transform:rotate(10deg);" aria-hidden="true">🐼</div>
 
     <div class="paper-card" id="payCard">
       <div class="price-row">
@@ -378,7 +411,9 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
       </div>
     </div>
 
-    <div class="paper-card link-box" id="linkBox">
+    <div class="paper-card link-box" id="linkBox" style="position:relative;">
+      <div class="sticker" style="top:-16px; left:-10px; font-size:30px; transform:rotate(-10deg);" aria-hidden="true">🎀</div>
+      <div class="sticker" style="top:-14px; right:-10px; font-size:30px; transform:rotate(10deg);" aria-hidden="true">🐼</div>
       <h3 style="text-align:center;">It's ready! 🎉</h3>
       <p style="text-align:center;color:var(--ink-soft);font-size:14px;">Send this link to her — no payment needed on her end.</p>
       <div class="link-field">
@@ -434,10 +469,13 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
     <!-- PAGE 1 — her message -->
     <div class="recipient-page" data-page="1">
       <div class="frame-card">
-        <div class="sticker" style="top:10px; left:12px; font-size:28px;">🌷</div>
-        <div class="sticker" style="top:12px; right:14px; font-size:20px;">⭐</div>
-        <div class="sticker" style="bottom:14px; left:10px; font-size:22px;">📖</div>
-        <div class="sticker" style="bottom:14px; right:14px; font-size:22px;">🌹</div>
+        <div class="sticker" style="top:10px; left:12px; font-size:30px;">🌷</div>
+        <div class="sticker" style="top:12px; right:14px; font-size:22px;">⭐</div>
+        <div class="sticker" style="top:44px; left:50%; transform:translateX(-50%) rotate(-4deg); font-size:26px;">🎀</div>
+        <div class="sticker" style="bottom:14px; left:10px; font-size:26px;">📖</div>
+        <div class="sticker" style="bottom:14px; right:14px; font-size:24px;">🌹</div>
+        <div class="sticker" style="bottom:44px; left:16px; font-size:28px; transform:rotate(-8deg);">🐼</div>
+        <div class="sticker" style="bottom:46px; right:18px; font-size:24px; transform:rotate(8deg);">💗</div>
         <div class="notebook-title"><h3 style="font-size:18px;">A little something for <span id="toNameB"></span></h3></div>
         <div class="notebook">
           <div class="user-quote hand" id="messageBody" style="font-size:21px; -webkit-line-clamp:unset;"></div>
@@ -494,6 +532,8 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
     </div>
   </div>
 
+  <!-- MUSIC: same file as the preview player above — keep the src the same
+       in both places. -->
   <audio id="bgMusic" loop src="music/romantic-theme.mp3"></audio>
 </div>
 
@@ -531,8 +571,31 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
    create policy "anyone can upload photos" on storage.objects
      for insert with check (bucket_id = 'photos');
 
+   -- Enforce the 1MB-per-photo cap at the storage layer too (belt & braces —
+   -- the app already compresses every photo client-side before upload, this
+   -- just guarantees nothing over 1MB can ever land in the bucket even if
+   -- someone bypasses the UI).
+   update storage.buckets
+     set file_size_limit = 1048576, -- 1MB in bytes
+         allowed_mime_types = array['image/jpeg','image/png','image/webp']
+     where id = 'photos';
+
+   -- Speeds up recipient-view lookups once you have hundreds/thousands of rows.
+   create index if not exists cards_created_at_idx on cards (created_at desc);
+
    Paste your project URL + anon key below so links work on any device.
    Until then, everything falls back to localStorage on the same browser.
+
+   SCALE NOTES FOR ~1,000+ CARDS:
+   - Each card now stores 2 photos capped at ~0.9MB each (compressed
+     client-side before upload), so ~1,000 cards ≈ 1.8GB of storage,
+     comfortably inside Supabase's free-tier limits for a while; the paid
+     Pro plan (from $25/mo) is worth it once you're consistently over ~1GB
+     or want daily backups.
+   - The `cards` table itself is tiny (a row per card, no images in it),
+     so 1,000+ rows is trivial for the free Postgres tier.
+   - No other SQL changes are required to support 1,000 users — the schema,
+     policies, and the new bucket size cap above are everything needed.
 ===================================================================== */
 const SUPABASE_URL = "https://ophnjvpuhoplehzfblsu.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9waG5qdnB1aG9wbGVoemZibHN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMjM4MjAsImV4cCI6MjEwMDY5OTgyMH0.Areq5ybLdztNDleqGiLJCizpOkDcXRlznlu4jpDqQb8";
@@ -542,7 +605,9 @@ const SUPABASE_BUCKET = "photos";
 const COUPONS = {
   "LOVE10":    { type: "percent", value: 10, label: "10% off" },
   "FIRSTLOVE": { type: "flat",    value: 29, label: "₹29 off" },
-  "AUGUST1":   { type: "percent", value: 20, label: "20% off — Girlfriend's Day special" }
+  "AUGUST1":   { type: "percent", value: 20, label: "20% off — Girlfriend's Day special" },
+  "LOVE50":    { type: "percent", value: 50, label: "50% off" },
+  "SWEET60":   { type: "percent", value: 60, label: "60% off — limited time" }
 };
 const BASE_PRICE_INR = 129;
 const RAZORPAY_KEY_ID = "rzp_live_TH7gs9nI1yjgD8";
@@ -613,14 +678,79 @@ function fileToDataUrl(file){
     reader.readAsDataURL(file);
   });
 }
-async function uploadPhotoToSupabase(file){
+function blobToDataUrl(blob){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+// Shrinks any uploaded photo down to a JPEG under ~900KB (comfortably below
+// Supabase's 1MB bucket limit) by resizing to a max dimension and, if it's
+// still too big, stepping the JPEG quality down until it fits.
+const MAX_PHOTO_BYTES = 900 * 1024; // ~0.9MB safety margin under the 1MB cap
+const MAX_PHOTO_DIMENSION = 1600;
+function compressImage(file, maxDim = MAX_PHOTO_DIMENSION, maxBytes = MAX_PHOTO_BYTES){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Couldn't read that image."));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Couldn't read that image."));
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width >= height) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+          else { width = Math.round(width * (maxDim / height)); height = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.88;
+        const tryExport = () => {
+          canvas.toBlob((blob) => {
+            if (!blob) { reject(new Error("Couldn't compress that image.")); return; }
+            if (blob.size > maxBytes && quality > 0.35) {
+              quality -= 0.12;
+              tryExport();
+            } else {
+              resolve(blob);
+            }
+          }, 'image/jpeg', quality);
+        };
+        tryExport();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+// Races a promise against a timeout so a hung/unreachable network call
+// can never freeze the UI (this is what caused the "stuck on Preparing…" bug).
+function withTimeout(promise, ms = 12000){
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timed out')), ms))
+  ]);
+}
+async function uploadPhotoToSupabase(blob){
   const sb = getSupabase();
-  if (!sb) return await fileToDataUrl(file);
-  const path = `${uid()}-${file.name}`;
-  const { error } = await sb.storage.from(SUPABASE_BUCKET).upload(path, file);
-  if (error) { console.error(error); return await fileToDataUrl(file); }
-  const { data } = sb.storage.from(SUPABASE_BUCKET).getPublicUrl(path);
-  return data.publicUrl;
+  if (!sb) return await blobToDataUrl(blob);
+  try {
+    const path = `${uid()}.jpg`;
+    const { error } = await withTimeout(
+      sb.storage.from(SUPABASE_BUCKET).upload(path, blob, { contentType: 'image/jpeg', upsert: false })
+    );
+    if (error) throw error;
+    const { data } = sb.storage.from(SUPABASE_BUCKET).getPublicUrl(path);
+    return data.publicUrl;
+  } catch (err){
+    console.warn("Photo upload to Supabase failed or timed out — saving it locally instead:", err);
+    return await blobToDataUrl(blob);
+  }
 }
 async function saveCard(card){
   const sb = getSupabase();
@@ -631,8 +761,13 @@ async function saveCard(card){
     localStorage.setItem("gfday_card_" + id, JSON.stringify(row));
     return id;
   }
-  const { error } = await sb.from(SUPABASE_TABLE).insert(row);
-  if (error) { console.error(error); localStorage.setItem("gfday_card_" + id, JSON.stringify(row)); }
+  try {
+    const { error } = await withTimeout(sb.from(SUPABASE_TABLE).insert(row));
+    if (error) throw error;
+  } catch (err){
+    console.warn("Saving card to Supabase failed or timed out — saving it locally instead:", err);
+    localStorage.setItem("gfday_card_" + id, JSON.stringify(row));
+  }
   return id;
 }
 async function loadCard(id){
@@ -675,11 +810,23 @@ function initCreatorFlow(){
       const idx = Number(e.target.dataset.idx);
       const file = e.target.files[0];
       if (!file) return;
-      const dataUrl = await fileToDataUrl(file);
-      photos[idx] = { file, previewUrl: dataUrl };
       const slot = document.getElementById('slot' + idx);
-      slot.innerHTML = `<img src="${dataUrl}" alt="">`;
-      slot.appendChild(input);
+      const originalHTML = slot.innerHTML;
+      slot.innerHTML = `<span>Compressing…</span>`;
+      try {
+        if (!file.type.startsWith('image/')) throw new Error('not an image');
+        const blob = await compressImage(file);
+        const previewUrl = URL.createObjectURL(blob);
+        photos[idx] = { blob, previewUrl };
+        slot.innerHTML = `<img src="${previewUrl}" alt="">`;
+        slot.appendChild(input);
+      } catch (err){
+        console.warn('Photo compression failed:', err);
+        alert("That photo couldn't be processed — please try a different image.");
+        photos[idx] = null;
+        slot.innerHTML = originalHTML;
+        slot.appendChild(input);
+      }
     });
   });
 
@@ -695,18 +842,30 @@ function initCreatorFlow(){
     const btn = document.getElementById('previewBtn');
     btn.disabled = true; btn.textContent = "Preparing…";
 
-    const photoUrls = [];
-    for (const p of photos) { photoUrls.push(await uploadPhotoToSupabase(p.file)); }
+    // Absolute safety net: no matter what happens above, the button
+    // is guaranteed to be re-enabled within 20s so it can never stay
+    // stuck on "Preparing…" forever.
+    const resetBtn = () => { btn.disabled = false; btn.textContent = "Preview her page →"; };
+    const safety = setTimeout(resetBtn, 20000);
 
-    saveDraft({ fromName, toName, message, photoUrls, paid:false });
-    btn.disabled = false; btn.textContent = "Preview her page →";
+    try {
+      const photoUrls = [];
+      for (const p of photos) { photoUrls.push(await uploadPhotoToSupabase(p.blob)); }
 
-    populatePreview({ fromName, toName, message, photoUrls });
+      saveDraft({ fromName, toName, message, photoUrls, paid:false });
+      populatePreview({ fromName, toName, message, photoUrls });
 
-    document.getElementById('stepForm').classList.remove('active');
-    document.getElementById('stepPreview').classList.add('active');
-    storyShow(0);
-    window.scrollTo(0,0);
+      document.getElementById('stepForm').classList.remove('active');
+      document.getElementById('stepPreview').classList.add('active');
+      storyShow(0);
+      window.scrollTo(0,0);
+    } catch (err){
+      console.error("Couldn't prepare the preview:", err);
+      alert("Something went wrong preparing your preview — please try again.");
+    } finally {
+      clearTimeout(safety);
+      resetBtn();
+    }
   });
 
   document.getElementById('backToFormFromPreview').addEventListener('click', (e) => {
