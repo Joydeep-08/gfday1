@@ -374,11 +374,8 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
     </div>
   </div>
 
-  <!-- MUSIC: put your song at ./music/romantic-theme.mp3 next to this HTML
-       file (create a "music" folder if it doesn't exist) and it will play
-       automatically. Any filename works as long as it matches the src=""
-       here and in the matching #bgMusic tag further down. -->
-  <audio id="previewMusic" loop src="music/romantic-theme.mp3"></audio>
+  <!-- MUSIC: song.mp3 lives at the repo root next to this HTML file. -->
+  <audio id="previewMusic" loop src="song.mp3"></audio>
 
   <!-- STEP 3 — PAYMENT -->
   <div class="step" id="stepPayment" style="position:relative;">
@@ -534,7 +531,7 @@ input:focus,textarea:focus{border-color:var(--dusty-rose);}
 
   <!-- MUSIC: same file as the preview player above — keep the src the same
        in both places. -->
-  <audio id="bgMusic" loop src="music/romantic-theme.mp3"></audio>
+  <audio id="bgMusic" loop src="song.mp3"></audio>
 </div>
 
 <script>
